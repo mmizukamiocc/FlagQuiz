@@ -1,6 +1,9 @@
 package edu.orangecoastcollege.cs273.flagquiz;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +14,12 @@ import android.view.MenuItem;
 
 public class QuizActivity extends AppCompatActivity {
 
+    public static final String CHOICES = "pref_numberOfChoices";
+    public static final String REGIONS = "pref_regionsToInclude";
+
+    private boolean phoneDevice = true; // used to force portrait mode
+    private boolean preferencesChanged = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,15 +27,49 @@ public class QuizActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        // set default values in the app's SharedPreference
+        PreferenceManager.setDefaultValues(this,R.xml.preferences,false);
+
+
+        //register listener for SharedPreference change
+        PreferenceManager.getDefaultSharedPreferences(this).
+            registerOnSharedPreferenceChangeListener(
+                    preferencesChangeListener);
+
+        // determine screen size
+        int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+
+
+        //if device is a tablet, set phoneDevice to false
+        if (screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
+                screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE)
+        phoneDevice = false; // not a phone sized device
+
+        if(phoneDevice)
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (preferencesChanged)
+    {
+        // now that the default preference have been set,
+        // initialize QuizActivityFragment and start the quiz
+        QuizActivityFragment quizFragment = (QuizActivityFragment)
+            getSupportFragmentManager().findFragmentById(R.id.quizFragment);
+
+        quizFragment.updateGuessRows()
+
+    }
+
+
+
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
