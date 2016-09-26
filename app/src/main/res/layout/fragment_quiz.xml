@@ -33,8 +33,9 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/row1LinearLayout">
+        android:layout_height="wrap_content"
+        android:id="@+id/row1LinearLayout"
+        android:gravity="center">
 
         <Button
             android:layout_width="wrap_content"
@@ -47,26 +48,83 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button2" />
+            android:id="@+id/button2"
+            style="@android:style/Widget.Material.Button.Colored" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/row2LinearLayout">
+        android:layout_height="wrap_content"
+        android:id="@+id/row2LinearLayout"
+        android:gravity="center">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button3" />
+            android:id="@+id/button3"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button4" />
+            android:id="@+id/button4"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/row3LinearLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button5"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button6"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/row4LinearLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button7"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button8"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/answerTextView"
+        android:layout_gravity="center" />
 
 </LinearLayout>
