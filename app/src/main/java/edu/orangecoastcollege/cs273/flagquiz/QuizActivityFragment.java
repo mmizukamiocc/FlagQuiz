@@ -1,26 +1,32 @@
 package edu.orangecoastcollege.cs273.flagquiz;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
 import java.security.SecureRandom;
-import java.util.logging.Handler;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-import java.util.zip.Inflater;
 
 
 /**
@@ -50,7 +56,7 @@ public class QuizActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.OnCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
 
         View view = inflater.inflate(R.layout.fragment_quiz, container, false);
 
@@ -169,8 +175,81 @@ public class QuizActivityFragment extends Fragment {
 
         Collections.shuffle(fileNameList);
 
+        int correct = fileNameList.indexOf(correctAnswer);
+        fileNameList.add(fileNameList.remove(correct));
+
+        for (int row = 0;row <guessRows; row++)
+        {
+            for(int column = 0; column<guessLinearLayout[row].getChildCount();column++)
+            {
+                Button newGuessButton = (Button) guessLinearLayout[row].getChildAt(column);
+                newGuessButton.setEnabled(true);
+
+                String filename = fileNameList.get((row * 2) + column);
+                newGuessButton.setText(getCountryName(filename));
+
+            }
+
+        }
+
+        int row = random.nextInt(guessRows);
+        int column = random.nextInt(2);
+        LinearLayout randomRow = guessLinearLayout[row];
+        String countryName = getCountryName(correctAnswer);
+        ((Button) randomRow.getChildAt(column)).setText(countryName);
 
 
     }
 
+
+    private View.OnClickListener guessButtonListener = new View.OnClickListener() {
+    @Override
+    public void onClick(View v){
+        Button guessButton = ((Button) v);
+        String guess = guessButton.getText().toString();
+        String answer = getCountryName(correctAnswer);
+        ++totalGuesses;
+
+    if (guess.equals(answer)) {
+        ++correctAnswers;
+
+        answerTextView.setText(answer+ " ");
+        answerTextView.setTextColor(getResources().getColor(R.color.correct_answer,getContext().getTheme()));
+
+        disableButtons();
+
+        if (correctAnswers == FLAGS_IN_QUIZ) {
+
+            DialogFragment quizResults =
+                    new DialogFragment(){
+                        @Override
+                        public Dialog onCreateDialog(Bundle bundle) {
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(getActivity());
+                            builder.setMessage(getString(R.string.results, totalGuesses, (1000 / (double) totalGuesses)));
+
+                            builder.setPositiveButton(R.string.reset_quiz, new DialogInterface.OnClickListener()){
+                                public void onClick (DialogInterface dialog,int id){
+                                resetQuiz();
+
+                            }
+                            }
+
+                        }
+           return builder.create();
+                        };
+
+            }
+        }
+
+
+    }
+
+
+    }
+
+
+
+
+    }
 }

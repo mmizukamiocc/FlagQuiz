@@ -19,6 +19,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.*;
 
+import static android.R.attr.key;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static edu.orangecoastcollege.cs273.flagquiz.R.id.quizFragment;
+
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -107,37 +111,41 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private OnSharedPreferenceChangeListener preferencesChangeListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
+            new OnSharedPreferenceChangeListener() {
+                @Override
+
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                     preferencesChanged = true;
 
                     QuizActivityFragment quizFragment = (QuizActivityFragment)
                             getSupportFragmentManager().findFragmentById(R.id.quizFragment);
 
-
                     if (key.equals(CHOICES)) {
                         quizFragment.updateGuessRows(sharedPreferences);
                         quizFragment.resetQuiz();
-                    } else if (key.equals(REGIONS)) {
-                        Set<String> regions =
-                                sharedPreferences.getStringSet(REGIONS, null);
-
-                        if (regions != null && regions.size() > 0) {
-                            quizFragment.updateRegions(sharedPreferences);
-                            quizFragment.requestQuiz();
-                        } else {
-                            sharedPreferences.Editor editor =
-                                    sharedPreferences.edit();
-                            regions.add(getString(R.string.default_region));
-                            editor.putStringSet(REGIONS, regions);
-                            editor.apply();
-
-                            Toast.makeText(QuizActivity.this, R.string.default_region_message, Toast.LENGTH_SHORT).show();
-                        }
                     }
+                else if(key.equals(REGIONS))
+                {
+                    Set<String> regions =
+                            sharedPreferences.getStringSet(REGIONS, null);
 
-                    Toast.makeText(QuizActivity.this, R.string.restarting_quiz, Toast.LENGTH_SHORT).show();
+                    if (regions != null && regions.size() > 0) {
+                        quizFragment.updateRegions(sharedPreferences);
+                        quizFragment.requestQuiz();
+                    } else {
+                        SharedPreferences.Editor editor =
+                                sharedPreferences.edit();
+                        regions.add(getString(R.string.default_region));
+                        editor.putStringSet(REGIONS, regions);
+                        editor.apply();
+
+                        Toast.makeText(QuizActivity.this, R.string.default_region_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
 
+                Toast.makeText(QuizActivity.this,R.string.restarting_quiz,Toast.LENGTH_SHORT).
+
+                show();
+                }
             };
 }
