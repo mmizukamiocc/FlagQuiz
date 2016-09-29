@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +93,11 @@ public class QuizActivityFragment extends Fragment {
         return view;
     }
 
+    public String getCountryName(String filename)
+    {
+        return  filename.replace(".png","");
+    }
+
     public void updateGuessRows(SharedPreferences sharedPreferences){
 
         String choices =
@@ -109,6 +115,7 @@ public class QuizActivityFragment extends Fragment {
         regionsSet =
                 sharedPreferences.getStringSet(QuizActivity.REGIONS,null);
     }
+
     public void resetQuiz(){
 
         AssetManager assets = getActivity().getAssets();
@@ -226,20 +233,22 @@ public class QuizActivityFragment extends Fragment {
                         public Dialog onCreateDialog(Bundle bundle) {
                             AlertDialog.Builder builder =
                                     new AlertDialog.Builder(getActivity());
-                            builder.setMessage(getString(R.string.results, totalGuesses, (1000 / (double) totalGuesses)));
+                            builder.setMessage(getString(R.string.results,
+                                    totalGuesses, (1000 / (double) totalGuesses)));
 
-                            builder.setPositiveButton(R.string.reset_quiz, new DialogInterface.OnClickListener()){
+                            builder.setPositiveButton(R.string.reset_quiz,
+                                    new DialogInterface.OnClickListener(){
                                 public void onClick (DialogInterface dialog,int id){
                                 resetQuiz();
 
                             }
                             }
 
-                        }
+                            );
            return builder.create();
-                        };
+                        }
 
-            }
+            };
         }
 
 
@@ -251,5 +260,5 @@ public class QuizActivityFragment extends Fragment {
 
 
 
-    }
+    };
 }
