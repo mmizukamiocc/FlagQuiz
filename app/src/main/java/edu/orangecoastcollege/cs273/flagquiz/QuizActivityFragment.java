@@ -93,10 +93,6 @@ public class QuizActivityFragment extends Fragment {
         return view;
     }
 
-    public String getCountryName(String filename)
-    {
-        return  filename.replace(".png","");
-    }
 
     public void updateGuessRows(SharedPreferences sharedPreferences){
 
@@ -210,55 +206,79 @@ public class QuizActivityFragment extends Fragment {
 
 
     private View.OnClickListener guessButtonListener = new View.OnClickListener() {
-    @Override
-    public void onClick(View v){
-        Button guessButton = ((Button) v);
-        String guess = guessButton.getText().toString();
-        String answer = getCountryName(correctAnswer);
-        ++totalGuesses;
+        @Override
+        public void onClick(View v) {
+            Button guessButton = ((Button) v);
+            String guess = guessButton.getText().toString();
+            String answer = getCountryName(correctAnswer);
+            ++totalGuesses;
 
-    if (guess.equals(answer)) {
-        ++correctAnswers;
+            if (guess.equals(answer)) {
+                ++correctAnswers;
 
-        answerTextView.setText(answer+ " ");
-        answerTextView.setTextColor(getResources().getColor(R.color.correct_answer,getContext().getTheme()));
+                answerTextView.setText(answer + " ");
+                answerTextView.setTextColor(getResources().getColor(R.color.correct_answer, getContext().getTheme()));
 
-        disableButtons();
+                disableButtons();
 
-        if (correctAnswers == FLAGS_IN_QUIZ) {
+                if (correctAnswers == FLAGS_IN_QUIZ) {
 
-            DialogFragment quizResults =
-                    new DialogFragment(){
+                    DialogFragment quizResults =
+                            new DialogFragment() {
+                                @Override
+                                public Dialog onCreateDialog(Bundle bundle) {
+                                    AlertDialog.Builder builder =
+                                            new AlertDialog.Builder(getActivity());
+                                    builder.setMessage(getString(R.string.results,
+                                            totalGuesses, (1000 / (double) totalGuesses)));
+
+                                    builder.setPositiveButton(R.string.reset_quiz,
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    resetQuiz();
+
+                                                }
+                                            }
+
+                                    );
+                                    return builder.create();
+                                }
+
+                            };
+
+                    quizResults.setCancelable(false);
+                    quizResults.show(getFragmentManager(), "quiz results");
+                } else {
+                    handler.postDelayed(new Runnable() {
                         @Override
-                        public Dialog onCreateDialog(Bundle bundle) {
-                            AlertDialog.Builder builder =
-                                    new AlertDialog.Builder(getActivity());
-                            builder.setMessage(getString(R.string.results,
-                                    totalGuesses, (1000 / (double) totalGuesses)));
-
-                            builder.setPositiveButton(R.string.reset_quiz,
-                                    new DialogInterface.OnClickListener(){
-                                public void onClick (DialogInterface dialog,int id){
-                                resetQuiz();
-
-                            }
-                            }
-
-                            );
-           return builder.create();
+                        public void run() {
+                            loadNextFlag();
                         }
+                    }, 2000);
+                }
 
-            };
+            } else {
+                answerTextView.setText(R.string.incorrect_answer);
+                answerTextView.setTextColor(getResources().getColor(R.color.incorrect_answer, getContext().getTheme()));
+                guessButton.setEnabled(false);
+            }
+        }
+    };
+        private String getCountryName(String name) {
+            String countryName = name.substring(name.indexOf('-') + 1);
+            return countryName.replace('-', ' ');
         }
 
+        private void disableButtons() {
+            for (int row = 0; row < guessRows; row++) {
+                LinearLayout guessRow = guessLinearLayout[row];
+                for (int i = 0; i < guessRow.getChildCount(); i++)
+                    guessRow.getChildAt(i).setEnabled(false);
+            }
 
+        }
     }
 
 
-    }
 
 
-
-
-    };
-}

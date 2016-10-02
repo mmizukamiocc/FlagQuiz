@@ -131,7 +131,7 @@ public class QuizActivity extends AppCompatActivity {
 
                     if (regions != null && regions.size() > 0) {
                         quizFragment.updateRegions(sharedPreferences);
-                        quizFragment.requestQuiz();
+                        quizFragment.resetQuiz();
                     } else {
                         SharedPreferences.Editor editor =
                                 sharedPreferences.edit();
